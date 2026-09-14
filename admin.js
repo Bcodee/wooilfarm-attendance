@@ -138,7 +138,7 @@ const time = (value) =>
       ? logs
           .map((log) => {
             const employee = displayPerson(log);
-            return `<article class="note-card"><header>${avatar(employee)}<strong>${employee.name}</strong><time>${log.start_time}–${log.end_time}</time></header><p>${log.notes || `${log.task_type} · ${log.project}`}</p></article>`;
+            return `<article class="note-card"><header>${avatar(employee)}<strong>${employee.name}</strong><time>${log.start_time}–${log.end_time}</time></header><p>${log.notes || `${log.task_type} · House ${log.project}`}</p></article>`;
           })
           .join("")
       : `<p class="empty-state">Work notes will appear here as the team logs tasks.</p>`;
@@ -172,14 +172,19 @@ const time = (value) =>
       : `<div class="empty-state">No work logs match this house yet.</div>`;
   }
   function renderPeople() {
-    $("#peopleGrid").innerHTML = state.data.employees
-      .filter((member) => member.active !== false)
-      .map(
-        (member) =>
-          `<article class="person-card">${avatar(member)}<h3>${member.name}</h3><p>${member.role || "Farm team"}</p><span>${member.team}</span></article>`,
-      )
-      .join("");
-  }
+  $("#peopleGrid").innerHTML = state.data.employees
+    .filter((member) => member.active !== false)
+    .map(
+      (member) =>
+        `<article class="person-card">
+          ${avatar(member)}
+          <h3>${member.name}</h3>
+          <p>${member.role || "Farm team"}</p>
+          <span class="team">House: ${member.team}</span>
+        </article>`,
+    )
+    .join("");
+}
   function renderAll() {
     renderHeader();
     renderStats();
@@ -279,7 +284,6 @@ function workExcelRows() {
   }
   function updateSelectedDate() {
   const [year, month, day] = selectedDay.split("-").map(Number);
-
   const date = new Date(year, month - 1, day);
 
   $("#adminDate").textContent = dateFormat.format(date);
@@ -299,7 +303,6 @@ async function changeDate(offset) {
 
   const newDate = `${newYear}-${newMonth}-${newDay}`;
 
-  // Future date जान नदिने
   if (newDate > today) {
     return;
   }
@@ -309,78 +312,81 @@ async function changeDate(offset) {
   updateSelectedDate();
   await refresh();
 }
-  function init() {
+
+function init() {
   updateSelectedDate();
 
   const prevDateButton = $("#prevDateButton");
-const dateButton = $("#dateButton");
+  const dateButton = $("#dateButton");
 
-if (prevDateButton) {
-  prevDateButton.addEventListener("click", () => {
-    changeDate(-1);
-  });
-}
-
-if (dateButton) {
-  dateButton.addEventListener("click", async () => {
-    selectedDay = WooilData.dayKey();
-
-    updateSelectedDate();
-    await refresh();
-  });
-}
-
-  if (nextDateButton) {
-    nextDateButton.addEventListener("click", () => {
-      changeDate(1);
+  if (prevDateButton) {
+    prevDateButton.addEventListener("click", () => {
+      changeDate(-1);
     });
-    $("#dateButton").addEventListener("click", async () => {
-  selectedDay = WooilData.dayKey();
-
-  updateSelectedDate();
-  await refresh();
-});
   }
+
+  if (dateButton) {
+    dateButton.addEventListener("click", async () => {
+      selectedDay = WooilData.dayKey();
+      updateSelectedDate();
+      await refresh();
+    });
+  }
+
+  document.querySelectorAll(".nav-item").forEach((button) => {
+    button.addEventListener("click", () => {
+      showView(button.dataset.view);
+    });
+  });
+
+  document.querySelectorAll("[data-go]").forEach((button) => {
+    button.addEventListener("click", () => {
+      showView(button.dataset.go);
+    });
+  });
+
+  $("#refreshButton").addEventListener("click", async () => {
+    await refresh();
+    toast("Farm desk is up to date.");
+  });
+
+  $("#exportButton").addEventListener("click", () => {
+    WooilData.exportExcel(excelRows());
+    toast("Excel attendance report is downloading.");
+  });
+
+  $("#exportWorkButton").addEventListener("click", () => {
+    WooilData.exportWorkExcel(workExcelRows());
+    toast("Excel work report is downloading.");
+  });
+
+  $("#workFilters").addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+
+    state.filter = button.dataset.project;
+
+    document
+      .querySelectorAll("#workFilters button")
+      .forEach((item) => {
+        item.classList.toggle("active", item === button);
+      });
+
+    renderWorkBoard();
+  });
+
+  $("#openMemberModal").addEventListener("click", () => {
+    $("#memberDialog").showModal();
+  });
+
+  $("#closeMemberModal").addEventListener("click", () => {
+    $("#memberDialog").close();
+  });
+
+  $("#memberForm").addEventListener("submit", addMember);
 
   refresh();
-    document
-      .querySelectorAll(".nav-item")
-      .forEach((button) =>
-        button.addEventListener("click", () => showView(button.dataset.view)),
-      );
-    document
-      .querySelectorAll("[data-go]")
-      .forEach((button) =>
-        button.addEventListener("click", () => showView(button.dataset.go)),
-      );
-    $("#refreshButton").addEventListener("click", async () => {
-      await refresh();
-      toast("Farm desk is up to date.");
-    });
-    $("#exportButton").addEventListener("click", () => {
-      WooilData.exportExcel(excelRows());
-      toast("Excel attendance report is downloading.");
-    });
-    $("#exportWorkButton").addEventListener("click", () => {
-  WooilData.exportWorkExcel(workExcelRows());
-  toast("Excel work report is downloading.");
-});
-    $("#workFilters").addEventListener("click", (event) => {
-      const button = event.target.closest("button");
-      if (!button) return;
-      state.filter = button.dataset.project;
-      document
-        .querySelectorAll("#workFilters button")
-        .forEach((item) => item.classList.toggle("active", item === button));
-      renderWorkBoard();
-    });
-    $("#openMemberModal").addEventListener("click", () =>
-      $("#memberDialog").showModal(),
-    );
-    $("#closeMemberModal").addEventListener("click", () =>
-      $("#memberDialog").close(),
-    );
-    $("#memberForm").addEventListener("submit", addMember);
-  }
-  init();
-})();
+}
+
+init();
+})();                        

@@ -101,8 +101,7 @@
     const name = $("#registerName").value.trim();
     const team = $("#registerTeam").value;
     const role = $("#registerRole").value.trim() || "Farm team";
-    if (!name || !team) return toast("Please enter your name and department.", "warn");
-    const alreadyAdded = state.data.employees.find(person => person.name.trim().toLowerCase() === name.toLowerCase());
+if (!name || !team) return toast("Please enter your name and house.", "warn");    const alreadyAdded = state.data.employees.find(person => person.name.trim().toLowerCase() === name.toLowerCase());
     if (alreadyAdded) {
       state.selected = alreadyAdded; renderFarmers(); continueButton.disabled = false;
       $("#selectionHint").textContent = `${alreadyAdded.name} is already on the list — selected for you.`;
