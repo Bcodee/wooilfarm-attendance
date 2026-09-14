@@ -202,17 +202,22 @@
       <section id="worklogsView" class="admin-view">
         <div class="view-toolbar">
           <div>
-            <p class="eyebrow">WORK DEPARTMENT</p>
-            <h2>Daily work board</h2>
+            <p class="eyebrow">WORK HOUSE</p>
+            <h2>Daily work by house</h2>
           </div>
+          <button class="outline-button" id="exportWorkButton" type="button">
+            <span>⇩</span> Export Work Excel
+          </button>
           <div class="filter-pills" id="workFilters">
             <button class="active" data-project="all" type="button">
-              All projects</button
-            ><button data-project="Greenhouse A" type="button">
-              Greenhouse A</button
-            ><button data-project="Harvest & packing" type="button">
-              Packing</button
-            ><button data-project="Quality lab" type="button">Quality</button>
+              All houses
+            </button>
+            <button data-project="APC" type="button">APC</button>
+            <button data-project="A1" type="button">A1</button>
+            <button data-project="A2" type="button">A2</button>
+            <button data-project="C 동" type="button">C 동</button>
+            <button data-project="B1" type="button">B1</button>
+            <button data-project="B2" type="button">B2</button>
           </div>
         </div>
         <div class="work-board" id="workBoard"></div>
@@ -267,6 +272,7 @@
     </dialog>
     <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="supabase.js"></script>
 
     <script>

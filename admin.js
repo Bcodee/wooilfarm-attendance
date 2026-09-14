@@ -93,25 +93,43 @@ const time = (value) =>
       : `<p class="empty-state">No one has checked in yet.</p>`;
   }
   function renderDepartmentBars() {
-    const groups = [
-      "Greenhouse A",
-      "Greenhouse B",
-      "Harvest & packing",
-      "Quality lab",
-    ].map((project) => ({
-      project,
-      count: state.data.workLogs.filter((log) => log.project === project)
-        .length,
-    }));
-    const max = Math.max(...groups.map((group) => group.count), 1);
-    const shades = ["#3f9257", "#80ad70", "#eab153", "#916fca"];
-    $("#departmentBars").innerHTML = groups
-      .map(
-        (group, index) =>
-          `<div class="dept-row"><span>${group.project.replace(" & ", " + ")}</span><span class="bar"><i style="--width:${Math.max((group.count / max) * 100, group.count ? 9 : 0)}%;--bar:${shades[index]}"></i></span><b>${group.count}</b></div>`,
-      )
-      .join("");
-  }
+  const houses = ["APC", "A1", "A2", "C 동", "B1", "B2"].map((house) => ({
+    house,
+    count: state.data.workLogs.filter(
+      (log) => log.project === house
+    ).length,
+  }));
+
+  const max = Math.max(
+    ...houses.map((house) => house.count),
+    1
+  );
+
+  const shades = [
+    "#3f9257",
+    "#80ad70",
+    "#8fbd78",
+    "#eab153",
+    "#d97b5c",
+    "#916fca",
+  ];
+
+  $("#departmentBars").innerHTML = houses
+    .map(
+      (house, index) =>
+        `<div class="dept-row">
+          <span>${house.house}</span>
+          <span class="bar">
+            <i style="--width:${Math.max(
+              (house.count / max) * 100,
+              house.count ? 9 : 0
+            )}%;--bar:${shades[index]}"></i>
+          </span>
+          <b>${house.count}</b>
+        </div>`
+    )
+    .join("");
+}
   function renderRecentNotes() {
     const logs = [...state.data.workLogs]
       .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
@@ -147,10 +165,11 @@ const time = (value) =>
       ? logs
           .map((log) => {
             const employee = displayPerson(log);
-            return `<article class="work-card"><div class="work-card-top"><span class="project-tag">${log.project}</span><time>${formatWorkTime(log.start_time)}–${formatWorkTime(log.end_time)}</time></div><h3>${log.task_type}</h3><p>${log.notes || "No note added for this work period."}</p><footer class="work-card-footer">${avatar(employee)}<b>${employee.name}</b></footer></article>`;
+            return `<article class="work-card"><div class="work-card-top">
+<span class="project-tag">House: ${log.project}</span>            <time>${formatWorkTime(log.start_time)}–${formatWorkTime(log.end_time)}</time></div><h3>${log.task_type}</h3><p>${log.notes || "No note added for this work period."}</p><footer class="work-card-footer">${avatar(employee)}<b>${employee.name}</b></footer></article>`;
           })
           .join("")
-      : `<div class="empty-state">No work logs match this project yet.</div>`;
+      : `<div class="empty-state">No work logs match this house yet.</div>`;
   }
   function renderPeople() {
     $("#peopleGrid").innerHTML = state.data.employees
@@ -294,13 +313,22 @@ async function changeDate(offset) {
   updateSelectedDate();
 
   const prevDateButton = $("#prevDateButton");
-  
+const dateButton = $("#dateButton");
 
-  if (prevDateButton) {
-    prevDateButton.addEventListener("click", () => {
-      changeDate(-1);
-    });
-  }
+if (prevDateButton) {
+  prevDateButton.addEventListener("click", () => {
+    changeDate(-1);
+  });
+}
+
+if (dateButton) {
+  dateButton.addEventListener("click", async () => {
+    selectedDay = WooilData.dayKey();
+
+    updateSelectedDate();
+    await refresh();
+  });
+}
 
   if (nextDateButton) {
     nextDateButton.addEventListener("click", () => {

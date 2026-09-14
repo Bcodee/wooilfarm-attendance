@@ -48,10 +48,26 @@
     workStage.classList.toggle("hidden", !record?.check_in);
   }
   function renderProjects() {
-    const projects = ["Greenhouse A", "Greenhouse B", "Harvest & packing", "Quality lab"];
-    $("#projectChoices").innerHTML = projects.map(project => `<button type="button" class="project-choice ${state.project === project ? "selected" : ""}" data-project="${project}">${project}</button>`).join("");
-    $("#projectChoices").querySelectorAll("button").forEach(button => button.addEventListener("click", () => { state.project = button.dataset.project; renderProjects(); }));
-  }
+  const houses = ["APC", "A1", "A2", "C 동", "B1", "B2"];
+
+  $("#projectChoices").innerHTML = houses
+    .map(
+      (house) =>
+        `<button type="button" class="project-choice ${
+          state.project === house ? "selected" : ""
+        }" data-project="${house}">${house}</button>`,
+    )
+    .join("");
+
+  $("#projectChoices")
+    .querySelectorAll("button")
+    .forEach((button) =>
+      button.addEventListener("click", () => {
+        state.project = button.dataset.project;
+        renderProjects();
+      }),
+    );
+}
   function updatePulse() {
     const total = state.data.attendance.filter(record => record.work_date === today() && record.check_in && !record.check_out).length;
     $("#activeCount").textContent = total;
@@ -72,9 +88,9 @@
   async function handleWork(event) {
     event.preventDefault();
     const taskType = $("#taskType").value, start = $("#startTime").value, end = $("#endTime").value;
-    if (!state.project) return toast("Please choose a project first.", "warn");
-    if (!taskType || !start || !end) return toast("Add the work type and time range.", "warn");
-    if (end <= start) return toast("End time must be after start time.", "warn");
+      if (!state.project) return toast("Please choose a house first.", "warn");    
+      if (!taskType || !start || !end) return toast("Add the work type and time range.", "warn");
+      if (end <= start) return toast("End time must be after start time.", "warn");
     try {
       await WooilData.saveWork({ employee_id: state.selected.id, project: state.project, task_type: taskType, start_time: start, end_time: end, notes: $("#workNote").value.trim() });
       event.target.reset(); const now = new Date(); $("#startTime").value = localTimeValue(now); $("#endTime").value = localTimeValue(new Date(now.getTime() + 60 * 60 * 1000)); state.project = null; renderProjects(); toast("Work log saved to the department board.");
