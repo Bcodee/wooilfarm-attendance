@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d422e" />
+    <title>WOOILFARM · Farm Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-body">
+    <aside class="sidebar">
+      <a class="brand brand-sidebar" href="index.html"
+        ><span class="brand-mark"
+          ><svg viewBox="0 0 40 40" fill="none">
+            <path
+              d="M20 34V9M12.5 31.5V17M27.5 31.5V14"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+            <path
+              d="M9 24.5c-4-3.6-3.1-8 2.5-9.3 3.6 4.4 2.4 8-2.5 9.3ZM24.6 17.1c.6-5.4 4.8-7.1 9.1-4.8-.4 5.7-4 7.3-9.1 4.8Z"
+              fill="currentColor"
+            /></svg></span
+        ><span><strong>WOOILFARM</strong><small>FARM DESK</small></span></a
+      >
+      <nav class="side-nav" aria-label="Farm desk navigation">
+        <button class="nav-item active" data-view="overview" type="button">
+          <i>⌘</i>Overview
+        </button>
+        <button class="nav-item" data-view="attendance" type="button">
+          <i>◷</i>Attendance
+        </button>
+        <button class="nav-item" data-view="worklogs" type="button">
+          <i>☷</i>Work board
+        </button>
+        <button class="nav-item" data-view="people" type="button">
+          <i>◉</i>Farmers
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="admin-person">
+          <span class="avatar">M</span
+          ><span><b>Farm manager</b><small>Administrator</small></span
+          ><button type="button" title="Settings">···</button>
+        </div>
+        <a href="index.html">← Back to check-in</a>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div>
+          <p class="eyebrow">WOOILFARM · LIVE OPERATIONS</p>
+          <h1 id="viewTitle">Good morning, manager.</h1>
+        </div>
+        <div class="admin-header-actions">
+          <span class="sync-state" id="syncState"><i></i> Demo data</span>
+          <div class="date-navigation">
+            <button id="prevDateButton" class="date-nav-button" type="button">
+              ←
+            </button>
+
+            <button class="header-date" id="dateButton" type="button">
+              <span id="adminDate"></span>
+            </button>
+
+            <button id="nextDateButton" class="date-nav-button" type="button">
+              →
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section id="overviewView" class="admin-view active">
+        <div class="stat-grid">
+          <article class="stat-card forest">
+            <span class="stat-icon">◉</span>
+            <p>ON THE FARM</p>
+            <strong id="statPresent">0</strong
+            ><small>checked in right now <b id="presentDelta">·</b></small>
+            <div class="stat-spark">
+              <i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </article>
+          <article class="stat-card cream">
+            <span class="stat-icon coral">◷</span>
+            <p>AVG. ARRIVAL</p>
+            <strong id="statArrival">—</strong
+            ><small>today’s first check-in</small>
+            <div class="metric-line">
+              <span>Target 08:30</span><b>View report →</b>
+            </div>
+          </article>
+          <article class="stat-card tomato">
+            <span class="stat-icon">☷</span>
+            <p>WORK LOGS</p>
+            <strong id="statLogs">0</strong><small>tasks reported today</small>
+            <div class="metric-line">
+              <span>Across all projects</span><b>Open board →</b>
+            </div>
+          </article>
+          <article class="stat-card mint">
+            <span class="stat-icon dark">◌</span>
+            <p>ACTIVE PROJECTS</p>
+            <strong>4</strong><small>greenhouse & packing</small>
+            <div class="project-dots"><i></i><i></i><i></i><i></i></div>
+          </article>
+        </div>
+        <div class="dashboard-grid">
+          <section class="dashboard-card attendance-list-card">
+            <header>
+              <div>
+                <p class="eyebrow">TODAY</p>
+                <h2>Attendance board</h2>
+              </div>
+              <button class="text-button" data-go="attendance" type="button">
+                View all <b>→</b>
+              </button>
+            </header>
+            <div class="mini-list" id="overviewAttendance"></div>
+          </section>
+          <section class="dashboard-card operations-card">
+            <header>
+              <div>
+                <p class="eyebrow">FIELD ACTIVITY</p>
+                <h2>Work by department</h2>
+              </div>
+              <button class="text-button" data-go="worklogs" type="button">
+                Full board <b>→</b>
+              </button>
+            </header>
+            <div id="departmentBars" class="department-bars"></div>
+            <div class="legend">
+              <span><i class="legend-green"></i> Greenhouse</span
+              ><span><i class="legend-gold"></i> Harvest</span
+              ><span><i class="legend-coral"></i> Packing</span>
+            </div>
+          </section>
+        </div>
+        <section class="dashboard-card daily-log-card">
+          <header>
+            <div>
+              <p class="eyebrow">JUST IN</p>
+              <h2>Latest field notes</h2>
+            </div>
+            <button class="text-button" data-go="worklogs" type="button">
+              See all <b>→</b>
+            </button>
+          </header>
+          <div class="notes-grid" id="recentNotes"></div>
+        </section>
+      </section>
+
+      <section id="attendanceView" class="admin-view">
+        <div class="view-toolbar">
+          <div>
+            <p class="eyebrow">TIME & ATTENDANCE</p>
+            <h2>Today’s attendance</h2>
+          </div>
+          <div class="toolbar-actions">
+            <button class="outline-button" id="exportButton" type="button">
+              <span>⇩</span> Export Excel</button
+            ><button
+              class="button button-primary small"
+              id="refreshButton"
+              type="button"
+            >
+              Refresh data
+            </button>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>FARMER</th>
+                  <th>TEAM</th>
+                  <th>CHECK IN</th>
+                  <th>CHECK OUT</th>
+                  <th>HOURS</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="table-note">
+          The Excel export contains the full check-in / check-out report for the
+          selected day.
+        </p>
+      </section>
+
+      <section id="worklogsView" class="admin-view">
+        <div class="view-toolbar">
+          <div>
+            <p class="eyebrow">WORK DEPARTMENT</p>
+            <h2>Daily work board</h2>
+          </div>
+          <div class="filter-pills" id="workFilters">
+            <button class="active" data-project="all" type="button">
+              All projects</button
+            ><button data-project="Greenhouse A" type="button">
+              Greenhouse A</button
+            ><button data-project="Harvest & packing" type="button">
+              Packing</button
+            ><button data-project="Quality lab" type="button">Quality</button>
+          </div>
+        </div>
+        <div class="work-board" id="workBoard"></div>
+      </section>
+
+      <section id="peopleView" class="admin-view">
+        <div class="view-toolbar">
+          <div>
+            <p class="eyebrow">TEAM DIRECTORY</p>
+            <h2>WOOILFARM farmers</h2>
+          </div>
+          <button
+            class="button button-primary small"
+            id="openMemberModal"
+            type="button"
+          >
+            <span>+</span> Add farmer
+          </button>
+        </div>
+        <div class="people-grid" id="peopleGrid"></div>
+      </section>
+    </main>
+
+    <dialog class="member-dialog" id="memberDialog">
+      <form id="memberForm" method="dialog">
+        <button class="dialog-close" type="button" id="closeMemberModal">
+          ×
+        </button>
+        <p class="eyebrow">TEAM DIRECTORY</p>
+        <h2>Add a farmer</h2>
+        <label
+          >Full name<input
+            id="memberName"
+            required
+            placeholder="e.g. Min-jun Kim" /></label
+        ><label
+          >Team<select id="memberTeam" required>
+            <option>Greenhouse A</option>
+            <option>Greenhouse B</option>
+            <option>Harvest & packing</option>
+            <option>Quality lab</option>
+          </select></label
+        ><label
+          >Role<input
+            id="memberRole"
+            required
+            placeholder="e.g. Field specialist" /></label
+        ><button class="button button-primary" type="submit">
+          <span>Save farmer</span><b>✓</b>
+        </button>
+      </form>
+    </dialog>
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <script>
+      const adminSupabase = window.supabase.createClient(
+        window.WOOILFARM_CONFIG.supabaseUrl,
+        window.WOOILFARM_CONFIG.supabaseAnonKey,
+      );
+
+      (async () => {
+        const {
+          data: { session },
+        } = await adminSupabase.auth.getSession();
+
+        if (!session) {
+          window.location.replace("admin-login.html");
+          return;
+        }
+
+        // Login भएको अवस्थामा मात्र dashboard code चल्छ
+        const script = document.createElement("script");
+        script.src = "admin.js";
+        document.body.appendChild(script);
+      })();
+    </script>
+  </body>
+</html>

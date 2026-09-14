@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d422e" />
+    <title>WOOILFARM · FieldLog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app-body">
+    <div class="page-grain"></div>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="WOOILFARM home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none">
+            <path
+              d="M20 34V9M12.5 31.5V17M27.5 31.5V14"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+            <path
+              d="M9 24.5c-4-3.6-3.1-8 2.5-9.3 3.6 4.4 2.4 8-2.5 9.3ZM24.6 17.1c.6-5.4 4.8-7.1 9.1-4.8-.4 5.7-4 7.3-9.1 4.8Z"
+              fill="currentColor"
+            />
+          </svg>
+        </span>
+        <span
+          ><strong>WOOILFARM</strong
+          ><small>오늘의 농장 작업 기록 · Daily field log</small></span
+        >
+      </a>
+      <div class="header-actions">
+        <div class="language-switch" role="group" aria-label="Language">
+          <button class="lang active" type="button" data-language="ko">
+            KO
+          </button>
+          <button class="lang" type="button" data-language="en">EN</button>
+          <button class="lang" type="button" data-language="ne">NE</button>
+        </div>
+        <a class="admin-link" href="admin.html"
+          ><span>Admin</span><span aria-hidden="true">↗</span></a
+        >
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-grid">
+        <article class="welcome-panel">
+          <div class="panel-topline">
+            <span class="live-dot"></span
+            ><span>WOOILFARM · FIELD OPERATIONS</span
+            ><span id="todayDate"></span>
+          </div>
+          <div class="hero-copy">
+            <p class="eyebrow">SMART TOMATO FARM · 2026</p>
+            <h1>Grow better,<br /><em>together.</em></h1>
+            <p>
+              Check in, record your work, and keep every harvest day beautifully
+              organized.
+            </p>
+          </div>
+          <div class="tomato-row" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="leaf leaf-one"></div>
+          <div class="leaf leaf-two"></div>
+        </article>
+
+        <aside class="day-card" id="dayCard">
+          <div class="day-card-head">
+            <span>FIELD PULSE</span
+            ><span class="status-badge"><i></i>Live</span>
+          </div>
+          <strong id="activeCount">0</strong
+          ><span class="muted">farmers checked in today</span>
+          <div class="pulse-bars" aria-label="Today’s attendance activity">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <p><span>Sunrise</span><b>06:18</b><span>Sunset</span><b>18:42</b></p>
+        </aside>
+      </section>
+
+      <section class="workspace" aria-label="Check in and work log">
+        <div class="progress-line">
+          <span class="is-current">01 <b>Select farmer</b></span
+          ><i></i><span>02 <b>Attendance</b></span
+          ><i></i><span>03 <b>Work log</b></span>
+        </div>
+
+        <div class="select-stage" id="selectStage">
+          <div class="section-intro">
+            <div>
+              <p class="eyebrow">WHO IS WORKING?</p>
+              <h2>Select your name to begin.</h2>
+            </div>
+            <p>One simple check-in starts today’s work record.</p>
+          </div>
+          <div class="farmer-grid" id="farmerGrid" aria-live="polite"></div>
+          <div class="selection-footer">
+            <div>
+              <p id="selectionHint">Choose a farmer to continue.</p>
+              <button
+                class="register-link"
+                id="openRegisterDialog"
+                type="button"
+              >
+                New at WOOILFARM? Add your name <b>→</b>
+              </button>
+            </div>
+            <button
+              class="button button-primary"
+              id="continueButton"
+              type="button"
+              disabled
+            >
+              <span>Continue with this name</span><b>→</b>
+            </button>
+          </div>
+        </div>
+
+        <div class="attendance-stage hidden" id="attendanceStage">
+          <div class="worker-banner">
+            <button
+              class="icon-button"
+              id="changeWorker"
+              type="button"
+              aria-label="Change worker"
+            >
+              ←
+            </button>
+            <div class="avatar avatar-large" id="chosenAvatar">W</div>
+            <div>
+              <p class="eyebrow">TODAY’S ATTENDANCE</p>
+              <h2 id="chosenName">Worker</h2>
+              <p id="chosenTeam">WOOILFARM team</p>
+            </div>
+            <div class="today-stamp">
+              <span id="attendanceDate"></span><b id="liveClock"></b>
+            </div>
+          </div>
+          <div class="attendance-actions">
+            <button
+              class="attendance-action checkin"
+              id="checkInButton"
+              type="button"
+            >
+              <span class="action-icon">↘</span
+              ><span
+                ><small>START YOUR DAY</small><strong>Check in</strong
+                ><em id="checkInStatus">Not checked in yet</em></span
+              >
+            </button>
+            <button
+              class="attendance-action checkout"
+              id="checkOutButton"
+              type="button"
+            >
+              <span class="action-icon">↗</span
+              ><span
+                ><small>FINISH YOUR DAY</small><strong>Check out</strong
+                ><em id="checkOutStatus">Available after check-in</em></span
+              >
+            </button>
+          </div>
+        </div>
+
+        <div class="work-stage hidden" id="workStage">
+          <div class="section-intro compact">
+            <div>
+              <p class="eyebrow">WORK DEPARTMENT</p>
+              <h2>What did you work on?</h2>
+            </div>
+            <p>
+              Choose a project and tell us the time spent. It becomes part of
+              your day’s log.
+            </p>
+          </div>
+          <form id="workForm" class="work-form">
+            <fieldset class="project-field">
+              <legend>1. Select project</legend>
+              <div id="projectChoices" class="project-choices"></div>
+            </fieldset>
+            <div class="form-row">
+              <label
+                >2. Work type<select id="taskType" required>
+                  <option value="">Choose a task</option>
+                  <option>Planting & pruning</option>
+                  <option>Harvesting</option>
+                  <option>Sorting & packing</option>
+                  <option>Greenhouse care</option>
+                  <option>Quality inspection</option>
+                  <option>Delivery preparation</option>
+                </select></label
+              >
+              <label
+                >3. Time worked
+                <div class="time-range">
+                  <input id="startTime" type="time" required /><span>to</span
+                  ><input id="endTime" type="time" required /></div
+              ></label>
+            </div>
+            <label
+              >4. Short note <span class="optional">optional</span
+              ><textarea
+                id="workNote"
+                rows="3"
+                maxlength="280"
+                placeholder="Example: Completed pruning in rows A1–A8."
+              ></textarea>
+            </label>
+            <div class="form-submit">
+              <p>
+                <span class="mini-tomato">●</span> Your manager can see this in
+                the daily work board.
+              </p>
+              <button class="button button-primary" type="submit">
+                <span>Save work log</span><b>✓</b>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="bottom-note">
+        <span>WOOILFARM</span>
+        <p>
+          From seedling to shipment, every good tomato starts with a good day.
+        </p>
+        <a href="admin.html">Open farm dashboard <b>→</b></a>
+      </section>
+    </main>
+
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+    <dialog class="member-dialog self-register-dialog" id="registerDialog">
+      <form id="registerForm" method="dialog">
+        <button
+          class="dialog-close"
+          type="button"
+          id="closeRegisterDialog"
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <p class="eyebrow">WOOILFARM · NEW FARMER</p>
+        <h2>Add your name</h2>
+        <p class="dialog-copy">
+          Enter your details once, then select your name whenever you check in.
+        </p>
+        <label
+          >Full name<input
+            id="registerName"
+            required
+            maxlength="80"
+            placeholder="e.g. Min-jun Kim"
+            autocomplete="name"
+        /></label>
+        <label
+          >Work department<select id="registerTeam" required>
+            <option value="">Choose your department</option>
+            <option>Greenhouse A</option>
+            <option>Greenhouse B</option>
+            <option>Harvest & packing</option>
+            <option>Quality lab</option>
+          </select></label
+        >
+        <label
+          >Your role <span class="optional">optional</span
+          ><input
+            id="registerRole"
+            maxlength="80"
+            placeholder="e.g. Harvest associate"
+        /></label>
+        <button class="button button-primary" type="submit">
+          <span>Add me to the list</span><b>✓</b>
+        </button>
+      </form>
+    </dialog>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

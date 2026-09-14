@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WOOILFARM — Admin Login</title>
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <style>
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(46, 125, 80, 0.12),
+            transparent 35%
+          ),
+          #f5f7f2;
+      }
+
+      .login-wrapper {
+        width: min(92%, 430px);
+      }
+
+      .login-card {
+        background: #ffffff;
+        border: 1px solid #dce5dc;
+        border-radius: 28px;
+        padding: 36px;
+        box-shadow: 0 20px 60px rgba(20, 60, 40, 0.12);
+      }
+
+      .login-logo {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: #0d4f38;
+        color: white;
+        font-size: 26px;
+        margin-bottom: 22px;
+      }
+
+      .login-eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #6b8275;
+        margin-bottom: 8px;
+      }
+
+      .login-title {
+        margin: 0;
+        font-size: 34px;
+        color: #103d2d;
+      }
+
+      .login-subtitle {
+        margin: 10px 0 28px;
+        color: #718078;
+        line-height: 1.5;
+      }
+
+      .login-form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .login-form label {
+        display: grid;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #234536;
+      }
+
+      .login-form input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 15px;
+        border: 1px solid #d5dfd7;
+        border-radius: 14px;
+        font-size: 16px;
+        outline: none;
+        background: #fbfcfa;
+      }
+
+      .login-form input:focus {
+        border-color: #28734f;
+        box-shadow: 0 0 0 3px rgba(40, 115, 79, 0.1);
+      }
+
+      .login-button {
+        margin-top: 8px;
+        border: 0;
+        border-radius: 14px;
+        padding: 15px;
+        background: #0d4f38;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .login-button:hover {
+        background: #126346;
+      }
+
+      .login-button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      .login-error {
+        display: none;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fff0f0;
+        color: #b42318;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .login-footer {
+        margin-top: 22px;
+        text-align: center;
+        font-size: 12px;
+        color: #87948d;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="login-wrapper">
+      <section class="login-card">
+        <div class="login-logo">🍅</div>
+
+        <div class="login-eyebrow">WOOILFARM · FARM DESK</div>
+
+        <h1 class="login-title">Admin Login</h1>
+
+        <p class="login-subtitle">
+          Sign in to manage attendance, farmers and daily field work.
+        </p>
+
+        <form id="loginForm" class="login-form">
+          <label>
+            Email
+            <input
+              id="email"
+              type="email"
+              placeholder="admin@example.com"
+              autocomplete="email"
+              required
+            />
+          </label>
+
+          <label>
+            Password
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+
+          <div id="loginError" class="login-error"></div>
+
+          <button id="loginButton" class="login-button" type="submit">
+            Sign in
+          </button>
+        </form>
+
+        <div class="login-footer">WOOILFARM · TOMATO PRODUCTION</div>
+      </section>
+    </main>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Your Supabase configuration -->
+    <script src="supabase.js"></script>
+
+    <script>
+      const supabaseClient = window.supabase.createClient(
+        window.WOOILFARM_CONFIG.supabaseUrl,
+        window.WOOILFARM_CONFIG.supabaseAnonKey,
+      );
+
+      const form = document.getElementById("loginForm");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const loginButton = document.getElementById("loginButton");
+      const loginError = document.getElementById("loginError");
+
+      function showError(message) {
+        loginError.textContent = message;
+        loginError.style.display = "block";
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        loginError.style.display = "none";
+        loginButton.disabled = true;
+        loginButton.textContent = "Signing in...";
+
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: emailInput.value.trim(),
+            password: passwordInput.value,
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (!data.session) {
+            throw new Error("Login session was not created.");
+          }
+
+          window.location.href = "admin.html";
+        } catch (error) {
+          console.error(error);
+
+          showError(
+            error.message ||
+              "Login failed. Please check your email and password.",
+          );
+
+          loginButton.disabled = false;
+          loginButton.textContent = "Sign in";
+        }
+      });
+    </script>
+  </body>
+</html>
